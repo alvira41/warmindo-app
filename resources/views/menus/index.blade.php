@@ -9,7 +9,7 @@
 </head>
 </head>
 <body class="relative min-h-screen 
-             bg-[url('/storage/bg.png')] 
+             bg-[url('/image/bg.png')] 
              bg-cover bg-center bg-no-repeat">
 
     <!-- Overlay -->
@@ -21,7 +21,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 
                 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <img src="{{ asset('storage/logo-indomie.png') }}" 
+            <img src="{{ asset('image/logo-indomie.png') }}" 
                  alt="Logo"
                  class="h-8 sm:h-10 md:h-12 w-auto">
             <p class="text-white font-bold 
@@ -32,7 +32,7 @@
         <a href="{{ url('/cart') }}" 
            class="relative">
             <img 
-                src="{{ asset('storage/cart.png') }}" 
+                src="{{ asset('image/cart.png') }}" 
                 alt="Cart"
                 class="w-8 sm:w-10 md:w-12 h-8 sm:h-10 md:h-12 cursor-pointer hover:scale-110 transition duration-200">
         </a>
@@ -79,7 +79,7 @@
 
         @forelse($menus as $menu)
             <div class="bg-white p-4 rounded-xl shadow-md">
-                <img src="{{ asset('storage/'.$menu->image) }}" 
+                <img src="{{ asset('image/'.$menu->image) }}" 
                      class="w-full h-40 object-contain rounded-lg">
 
                 <h3 class="mt-3 font-semibold text-lg">

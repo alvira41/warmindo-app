@@ -8,7 +8,7 @@
 </head>
 
 <body class="relative min-h-screen overflow-x-hidden
-             bg-[url('/storage/bg.png')] 
+             bg-[url('/image/bg.png')] 
              bg-cover bg-center bg-no-repeat">
 
     <!-- Overlay -->
@@ -21,7 +21,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 
                         flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('storage/logo-indomie.png') }}" 
+                    <img src="{{ asset('image/logo-indomie.png') }}" 
                          alt="Logo"
                          class="h-8 sm:h-10 md:h-12 w-auto">
                     <p class="text-white font-bold text-lg sm:text-xl md:text-2xl">
@@ -33,7 +33,7 @@
 
         <!-- IMAGE -->
         <div class="w-full">
-            <img src="{{ asset('storage/warung.png') }}"
+            <img src="{{ asset('image/warung.png') }}"
                  alt="warung"
                  class="w-full h-auto shadow-xl object-cover">
         </div>
