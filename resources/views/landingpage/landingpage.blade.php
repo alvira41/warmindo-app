@@ -8,7 +8,7 @@
 </head>
 
 <body class="relative min-h-screen overflow-x-hidden
-             bg-[url('/image/bg.png')] 
+             bg-[url('image/bg.png')] 
              bg-cover bg-center bg-no-repeat">
 
     <!-- Overlay -->
