@@ -9,14 +9,12 @@ use Illuminate\Support\Facades\Session;
 
 class OrderController extends Controller
 {
-    // 1. Menampilkan Halaman Keranjang Pelanggan
     public function viewCart()
     {
         $cart = session()->get('cart', []);
         return view('cart.index', compact('cart'));
     }
 
-    // 2. Fungsi Tambah Item ke Keranjang
     public function add($id)
     {
         $menu = Menu::findOrFail($id);
@@ -36,10 +34,6 @@ class OrderController extends Controller
         return redirect()->back()->with('success', 'Menu ditambahkan!');
     }
 
-    // 3. Fungsi Kurangi Item di Keranjang
-    // ... bagian atas tetap sama ...
-
-    // 3. Fungsi Kurangi Item (Ubah nama dari menus menjadi minus agar tidak bingung)
     public function minus($id)
     {
         $cart = session()->get('cart', []);
@@ -56,10 +50,8 @@ class OrderController extends Controller
         return redirect()->back();
     }
 
-    // 4. Fungsi Checkout (Simpan ke Database)
    public function checkout(Request $request)
 {
-    // ... kode validasi dan pengecekan cart tetap sama ...
 
     try {
         Order::create([
@@ -68,10 +60,8 @@ class OrderController extends Controller
             'status' => 'pending',
         ]);
 
-        // Hapus isi keranjang setelah dipesan
         session()->forget('cart');
 
-        // PERBAIKAN DI SINI: Arahkan ke halaman order status
         return redirect()->route('order.status')->with('success', 'Pesanan sedang disiapkan!');
         
     } catch (\Exception $e) {
@@ -79,15 +69,13 @@ class OrderController extends Controller
     }
 }
 
-    // 5. Menampilkan Dashboard Admin (Halaman Kasir)
- public function adminDashboard()
+ public function admin()
     {
         $orders = Order::orderBy('created_at', 'desc')->get();
-        // Pastikan nama file adalah resources/views/admin.blade.php
+
         return view('admin.index', compact('orders'));
     }
 
-    // 6. Update status pesanan (Untuk Manual Refresh/PHP)
     public function updateStatusManual(Request $request, $id)
     {
         $order = Order::findOrFail($id);
@@ -100,7 +88,6 @@ class OrderController extends Controller
 
     public function orderStatus()
 {
-    // Mengambil pesanan terbaru milik pelanggan (atau semua pesanan)
     $orders = Order::orderBy('created_at', 'desc')->get(); 
     return view('order-status', compact('orders'));
 }
