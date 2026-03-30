@@ -1,9 +1,13 @@
 <?php
-// Gunakan autoload dari vendor
+// Autoload
 require __DIR__ . '/../vendor/autoload.php';
 
-// Muat aplikasi Laravel
+// Boot Application
 $app = require_once __DIR__ . '/../bootstrap/app.php';
+
+// Paksa pembersihan cache di memori untuk Vercel
+$app->forgetInstance('config');
+$app->make('config');
 
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 
