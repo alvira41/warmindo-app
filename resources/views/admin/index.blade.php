@@ -6,7 +6,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="relative min-h-screen bg-[url('/storage/bg.png')] bg-cover bg-center bg-no-repeat">
+<body class="relative min-h-screen bg-[url('/storage/bg.png')]  bg-cover bg-center bg-no-repeat">
 
     <div class="absolute inset-0 bg-black/60"></div>
 
