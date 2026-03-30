@@ -21,7 +21,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 
                 flex items-center justify-between">
         <div class="flex items-center gap-3">
-            <img src="{{ asset('image/logo-indomie.png') }}" 
+            <img src="{{ asset('/image/logo-indomie.png') }}" 
                  alt="Logo"
                  class="h-8 sm:h-10 md:h-12 w-auto">
             <p class="text-white font-bold 

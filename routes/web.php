@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('landingpage.landingpage');
 });
+Route::redirect('/landingpage', '/');
 
 Route::get('/menus', [MenuController::class, 'index']);
 Route::get('/menu/category/{id}', [MenuController::class, 'byCategory']);

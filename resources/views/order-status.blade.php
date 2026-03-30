@@ -14,7 +14,7 @@
         <nav class="w-full bg-red-800 shadow-md rounded-b-xl">
             <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <img src="{{ asset('image/logo-indomie.png') }}" alt="Logo" class="h-10 w-auto">
+                    <img src="{{ asset('/image/logo-indomie.png') }}" alt="Logo" class="h-10 w-auto">
                     <p class="text-white font-bold text-2xl">WARMINDO</p>
                 </div>
                 <a href="{{ url('/menus') }}" class="text-white text-sm hover:underline">Tambah Pesanan</a>
