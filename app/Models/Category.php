@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Menu;
 
 class Category extends Model
 {
-    protected $fillable = ['nama_kategori'];
+    protected $fillable = ['name'];
 
     public function menus()
     {

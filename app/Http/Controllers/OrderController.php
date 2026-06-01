@@ -2,93 +2,90 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Order;
-use App\Models\Menu; 
-use Illuminate\Support\Facades\Session;
+use App\Models\OrderDetail;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function viewCart()
+    // =========================
+    // LIHAT SEMUA ORDER (ADMIN)
+    // =========================
+    public function index()
     {
-        $cart = session()->get('cart', []);
-        return view('cart.index', compact('cart'));
+        $orders = Order::with('orderDetails.menu')
+            ->latest()
+            ->get();
+
+        return view('admin.orders.index', compact('orders'));
     }
 
-    public function add($id)
+    // =========================
+    // DETAIL ORDER
+    // =========================
+    public function show($id)
     {
-        $menu = Menu::findOrFail($id);
-        $cart = session()->get('cart', []);
+        $order = Order::with('orderDetails.menu')
+            ->findOrFail($id);
 
-        if(isset($cart[$id])) {
-            $cart[$id]['qty']++;
-        } else {
-            $cart[$id] = [
-                "nama_menu" => $menu->nama_menu,
-                "qty" => 1,
-                "harga" => $menu->harga,
-            ];
-        }
-
-        session()->put('cart', $cart);
-        return redirect()->back()->with('success', 'Menu ditambahkan!');
+        return view('admin.orders.show', compact('order'));
     }
 
-    public function minus($id)
+    // =========================
+    // UPDATE STATUS PESANAN
+    // =========================
+    public function updateStatus(Request $request, $id)
     {
-        $cart = session()->get('cart', []);
-
-        if(isset($cart[$id])) {
-            if($cart[$id]['qty'] > 1) {
-                $cart[$id]['qty']--;
-            } else {
-                unset($cart[$id]);
-            }
-        }
-
-        session()->put('cart', $cart);
-        return redirect()->back();
-    }
-
-   public function checkout(Request $request)
-{
-
-    try {
-        Order::create([
-            'notes'  => $request->notes,
-            'total'  => $request->total,
-            'status' => 'pending',
+        $request->validate([
+            'status' => 'required|in:menunggu,diproses,selesai,done_payment'
         ]);
 
-        session()->forget('cart');
+        $order = Order::findOrFail($id);
+        $order->status = $request->status;
+        $order->save();
 
-        return redirect()->route('order.status')->with('success', 'Pesanan sedang disiapkan!');
-        
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+        return back()->with('success', 'Status berhasil diupdate');
     }
+
+    // =========================
+    // STATUS UNTUK PELANGGAN (HANYA 1 USER)
+    // =========================
+    public function status()
+    {
+        $orderId = session('last_order_id');
+
+        if (!$orderId) {
+            return redirect('/menu')->with('error', 'Tidak ada pesanan');
+        }
+
+        $orders = Order::with('orderDetails.menu')
+            ->where('id', $orderId)
+            ->get();
+
+        return view('order.status', compact('orders'));
+    }
+public function updateStatusManual(Request $request, $id)
+{
+    $request->validate([
+        'status' => 'required|in:menunggu,diproses,selesai,done_payment'
+    ]);
+
+    $order = Order::findOrFail($id);
+
+    $order->update([
+        'status' => $request->status
+    ]);
+
+    return back()->with(
+        'success',
+        'Status pesanan berhasil diupdate'
+    );
 }
 
- public function admin()
-    {
-        $orders = Order::orderBy('created_at', 'desc')->get();
-
-        return view('admin.index', compact('orders'));
-    }
-
-    public function updateStatusManual(Request $request, $id)
-    {
-        $order = Order::findOrFail($id);
-        $order->update([
-            'status' => $request->status
-        ]);
-
-        return redirect()->back()->with('success', 'Status pesanan diperbarui!');
-    }
-
-    public function orderStatus()
+public function print($id)
 {
-    $orders = Order::orderBy('created_at', 'desc')->get(); 
-    return view('order-status', compact('orders'));
+    $order = Order::with('details.menu')->findOrFail($id);
+
+    return view('admin.order.print', compact('order'));
 }
 }

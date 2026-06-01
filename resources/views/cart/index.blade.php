@@ -1,123 +1,158 @@
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Keranjang</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://cdn.tailwindcss.com"></script>
-    </head>
+<!DOCTYPE html>
+<html>
 
-    <body class="relative min-h-screen bg-[url('/storage/bg.png')] bg-cover bg-center bg-no-repeat">
+<head>
+    <title>Keranjang</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-        <div class="absolute inset-0 bg-black/50"></div>
+<body class="min-h-screen bg-[url('/image/bg.png')] bg-cover bg-center">
 
-        <div class="relative z-10">
-            <nav class="w-full bg-red-800 shadow-md rounded-b-xl">
-                <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div class="flex items-center gap-3">
-                        <img src="{{ asset('storage/logo-indomie.png') }}" alt="Logo" class="h-10 w-auto">
-                        <p class="text-white font-bold text-2xl">WARMINDO</p>
-                    </div>
-                </div>
-            </nav>
+    <!-- overlay -->
+    <div class="fixed inset-0 bg-black/60"></div>
 
-            <div class="flex justify-center items-start px-4 py-10">
-                <div class="w-full max-w-4xl bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-6 md:p-10">
+    <div class="relative z-10">
 
-                    <div class="text-center mb-8">
-                        <h1 class="text-3xl font-extrabold text-gray-800">🛒 Keranjang</h1>
-                    </div>
+        <!-- NAV -->
+        <nav class="sticky top-0 bg-red-800/90 backdrop-blur-md shadow-md">
+            <div class="max-w-5xl mx-auto px-4 py-4 flex items-center gap-3">
+                <img src="{{ asset('image/logo-indomie.png') }}" class="h-10">
+                <p class="text-white font-bold text-xl">WARMINDO</p>
+            </div>
+        </nav>
 
-                    @if(!empty($cart) && count($cart) > 0)
-                        @php $grandTotal = 0; @endphp
+        <!-- CONTENT -->
+        <div class="max-w-3xl mx-auto px-4 py-6">
 
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-center">
-                                <thead class="bg-gray-100 text-gray-700">
-                                    <tr>
-                                        <th class="py-3 px-3 rounded-l-lg text-left">Menu</th>
-                                        <th class="px-3">Harga</th>
-                                        <th class="px-3">Qty</th>
-                                        <th class="px-3 rounded-r-lg text-right">Total</th>
-                                    </tr>
-                                </thead>
+            <div class="bg-white/95 backdrop-blur-md rounded-2xl shadow-xl p-5">
 
-                                <tbody class="divide-y">
-                                    @foreach($cart as $id => $item)
-                                        @php 
-                                            $total = $item['harga'] * $item['qty'];
-                                            $grandTotal += $total;
-                                        @endphp
+                <h1 class="text-xl sm:text-2xl font-bold text-center mb-6">
+                    🛒 Keranjang Kamu
+                </h1>
 
-                                        <tr class="hover:bg-gray-50 transition">
-                                            <td class="py-4 px-3 font-medium text-left">
-                                                {{ $item['nama_menu'] }}
-                                            </td>
-                                            <td class="px-3 text-gray-600">
-                                                Rp {{ number_format($item['harga'],0,',','.') }}
-                                            </td>
-                                            <td class="px-3">
-                                                <div class="flex items-center justify-center gap-3">
-                                                    <form action="{{ route('cart.min', $id) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        <button type="submit" class="bg-red-100 text-red-600 px-2 rounded hover:bg-red-200 transition">-</button>
-                                                    </form>
-                                                    
-                                                    <span class="font-bold w-6 text-center">{{ $item['qty'] }}</span>
-                                                    
-                                                    <form action="{{ route('cart.add', $id) }}" method="POST" class="inline">
-                                                        @csrf
-                                                        <button type="submit" class="bg-green-100 text-green-600 px-2 rounded hover:bg-green-200 transition">+</button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                            <td class="px-3 font-semibold text-red-600 text-right">
-                                                Rp {{ number_format($total,0,',','.') }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                @php $cart = $cart ?? []; @endphp
 
-                        <div class="mt-8 text-right text-xl font-bold text-gray-800">
-                            Total: <span class="text-red-600">Rp {{ number_format($grandTotal,0,',','.') }}</span>
-                        </div>
+                @if(count($cart) > 0)
 
-                        <form action="{{ route('checkout') }}" method="POST" class="mt-10">
-                            @csrf
-                            <div class="mb-6 text-left">
-                                <label class="block text-gray-700 font-bold mb-2">Catatan Pesanan (Opsional):</label>
-                                <textarea name="notes" rows="2" 
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-red-500 outline-none transition" 
-                                        placeholder="Contoh: Indomie Gorengnya pedas sedang ya..."></textarea>
+                @php $grandTotal = 0; @endphp
+
+                <!-- ITEM LIST (CARD STYLE) -->
+                <div class="space-y-4">
+
+                    @foreach($cart as $id => $item)
+
+                    @php
+                    $price = $item['price'] ?? 0;
+                    $qty = $item['qty'] ?? 0;
+                    $total = $price * $qty;
+                    $grandTotal += $total;
+                    @endphp
+
+                    <div class="bg-white border rounded-xl p-4 shadow-sm">
+
+                        <!-- nama + harga -->
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="font-semibold text-base sm:text-lg">
+                                    {{ $item['name'] ?? '-' }}
+                                </h3>
+                                <p class="text-sm text-gray-500">
+                                    Rp {{ number_format($price,0,',','.') }}
+                                </p>
                             </div>
 
-                            <input type="hidden" name="total" value="{{ $grandTotal }}">
-
-                            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
-                                <a href="{{ url('/menus') }}" 
-                                class="w-full md:w-auto bg-gray-500 text-white px-8 py-3 rounded-xl hover:bg-gray-600 transition shadow-md text-center">
-                                    ⬅ Kembali ke Menu
-                                </a>
-                                
-                                <button type="submit" 
-                                        class="w-full md:w-auto bg-green-600 text-white px-10 py-3 rounded-xl hover:bg-green-700 transition shadow-lg font-bold text-lg">
-                                    🚀 Pesan Sekarang
-                                </button>
-                            </div>
-                        </form>
-
-                    @else
-                        <div class="text-center py-12">
-                            <p class="text-gray-600 text-xl mb-8">Keranjang masih kosong 🥲</p>
-                            <a href="{{ url('/menus') }}" 
-                            class="inline-block bg-green-600 text-white px-8 py-3 rounded-xl hover:bg-green-700 transition shadow-md">
-                                ⬅ Lihat Menu Sekarang
-                            </a>
+                            <p class="font-bold text-green-600 text-sm sm:text-base">
+                                Rp {{ number_format($total,0,',','.') }}
+                            </p>
                         </div>
-                    @endif
+
+                        <!-- qty control -->
+                        <div class="flex items-center justify-between mt-4">
+
+                            <div class="flex items-center gap-3">
+
+                                <form action="{{ route('cart.minus', $id) }}" method="POST">
+                                    @csrf
+                                    <button class="w-9 h-9 rounded-full bg-red-100 text-red-600 font-bold text-lg">
+                                        -
+                                    </button>
+                                </form>
+
+                                <span class="font-semibold text-lg">
+                                    {{ $qty }}
+                                </span>
+
+                                <form action="{{ route('cart.add', $id) }}" method="POST">
+                                    @csrf
+                                    <button class="w-9 h-9 rounded-full bg-green-600 text-white font-bold text-lg">
+                                        +
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    @endforeach
+
                 </div>
+
+                <!-- TOTAL BOX -->
+                <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                    <div class="flex justify-between font-bold text-lg">
+                        <span>Total</span>
+                        <span>Rp {{ number_format($grandTotal,0,',','.') }}</span>
+                    </div>
+                </div>
+
+                <!-- CHECKOUT -->
+                <form action="{{ route('checkout') }}" method="POST" class="mt-6 space-y-4">
+                    @csrf
+
+                    <textarea name="notes"
+                        class="w-full border rounded-xl p-3 text-sm"
+                        placeholder="Catatan pesanan..."></textarea>
+
+                    <input type="hidden" name="total_bayar" value="{{ $grandTotal }}">
+
+                    <div class="flex gap-3">
+
+                        <a href="{{ url('/menu') }}"
+                            class="flex-1 text-center bg-gray-500 text-white py-3 rounded-xl">
+                            Kembali
+                        </a>
+
+                        <button type="submit"
+                            class="flex-1 bg-green-600 text-white py-3 rounded-xl font-semibold">
+                            Checkout
+                        </button>
+
+                    </div>
+                </form>
+
+                @else
+
+                <p class="text-center text-gray-600 py-10">
+                    Keranjang masih kosong 🥲
+                </p>
+
+                <div class="text-center">
+                    <a href="{{ url('/menu') }}"
+                        class="inline-block mt-4 bg-red-600 text-white px-6 py-2 rounded-xl">
+                        Mulai Belanja
+                    </a>
+                </div>
+
+                @endif
+
             </div>
         </div>
-    </body>
-    </html>
+
+    </div>
+
+</body>
+
+</html>

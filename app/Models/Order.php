@@ -2,20 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    use HasFactory;
+   protected $fillable = [
+    'transaction_code',
+    'total_price',
+    'notes',
+    'status',
+    'payment_method'
+];
+    public function details()
+{
+    return $this->hasMany(OrderDetail::class, 'order_id');
+}
 
-    // Nama tabel di database
-    protected $table = 'orders';
-
-    // Kolom yang boleh diisi secara massal
-    protected $fillable = [
-        'notes',
-        'total',
-        'status',
-    ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
